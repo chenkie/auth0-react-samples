@@ -8,7 +8,7 @@ export default class Auth extends EventEmitter {
     domain: AUTH_CONFIG.domain,
     clientID: AUTH_CONFIG.clientId,
     redirectUri: AUTH_CONFIG.callbackUrl,
-    audience: `https://${AUTH_CONFIG.domain}/userinfo`,
+    audience: AUTH_CONFIG.apiUrl,
     responseType: 'token id_token'
   });
 
@@ -20,6 +20,9 @@ export default class Auth extends EventEmitter {
     this.logout = this.logout.bind(this);
     this.handleAuthentication = this.handleAuthentication.bind(this);
     this.isAuthenticated = this.isAuthenticated.bind(this);
+    this.getAccessToken = this.getAccessToken.bind(this);
+    this.getProfile = this.getProfile.bind(this);
+    this.authFetch = this.authFetch.bind(this);
   }
 
   login() {
@@ -62,7 +65,7 @@ export default class Auth extends EventEmitter {
 
   getProfile(cb) {
     let accessToken = this.getAccessToken();
-    this.auth0.client.getUserInfo(accessToken, (err, profile) => {
+    this.auth0.client.userInfo(accessToken, (err, profile) => {
       if (profile) {
         this.userProfile = profile;
       }
